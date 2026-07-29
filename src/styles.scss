@@ -1,0 +1,14 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--pt-bg, #fafafa);
+  color: var(--pt-text, #333);
+  font-family: system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--pt-bg-alt, #f0f0f0); }
+::-webkit-scrollbar-thumb { background: var(--pt-border, #ccc); border-radius: 3px; }
