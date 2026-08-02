@@ -31,6 +31,12 @@
             ],
             "styles": [
               "src/styles.scss"
+            ],
+            "externalDependencies": [
+              "@capacitor/core",
+              "@capacitor/haptics",
+              "@capacitor/keyboard",
+              "@capacitor/network"
             ]
           },
           "configurations": {
