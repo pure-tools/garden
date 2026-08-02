@@ -1,0 +1,54 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: npx ng build --base-href /garden/ --configuration production
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          LS_STORE_SLUG: ${{ secrets.LS_STORE_SLUG }}
+          LS_PRODUCT_ID: ${{ secrets.LS_PRODUCT_ID }}
+          LS_VARIANT_ID: ${{ secrets.LS_VARIANT_ID }}
+
+      - name: SPA routing fallback
+        run: cp dist/garden/browser/index.html dist/garden/browser/404.html
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/garden/browser
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
